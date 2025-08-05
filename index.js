@@ -80,7 +80,7 @@ async function verificarCookies(browser, cookies) {
                     "cookie": cookieHeader,
                     "Referer": "https://wplace.live/"
                 },
-                body: JSON.stringify({ colors: [ CORES['Light Teal'] ], coords: [460, 706] })
+                body: JSON.stringify({ colors: [ 1 ], coords: [460, 706] })
                 });
             }, `s=${cookie}`);
 
