@@ -1,30 +1,30 @@
-# 💧 GotasBot
-> Um bot talvez contra os TOS do Wplace, mas é indetectável.
+# 💧 gotas-bot
+> A bot that might be against Wplace's TOS, but it's undetectable.
 
-# Funções
-- Agrupa todas as contas numa só interface pra ver quando estão carregadas
-- Notificações por Webhook do Discord
-- Pinta pixel automático pra não deixar pixels parados ai upa nível
-- Compra automático algum item da loja quando tiver droplets suficientes
+# Features
+- Groups all accounts into a single interface to see when they are loaded
+- Discord Webhook notifications
+- Automatically paints pixels to avoid idle pixels and level up
+- Automatically buys an item from the shop when you have enough droplets
 
-Desenvolvido por Paulinho™ ✔
+Developed by Paulinho™ ✔
 
-# ⚙️ Como usar
-Crie um arquivo `cookies.json` e adicione os cookies `"s"` da conta Wplace no seguinte formato:
+# ⚙️ How to use
+Create a `cookies.json` file and add the "s" cookies from your Wplace account in the following format:
 ```json
 [
-  "xfSAFZ5xsX38gdRS_8xnlg%3D%3D" // esse cookie não existe tá
+  "xfSAFZ5xsX38gdRS_8xnlg%3D%3D" // this cookie doesn't exist, btw
 ]
 ```
-Crie um arquivo `.env` com a URL do seu webhook do Discord:
+Create a `.env` file with your Discord webhook URL:
 
 ```env
-DISCORD_WEBHOOK_URL="https://linkdowebhook"
+DISCORD_WEBHOOK_URL="https://webhooklink"
 ```
 
-# Rode o bot:
+# Run the bot:
 ```bash
 node index.js
 ```
 
-E é isso, os guri ta on line
+And that's it, the boys are online
