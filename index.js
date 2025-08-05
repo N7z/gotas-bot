@@ -63,14 +63,7 @@ async function verificarCookies(browser, cookies) {
         const maxGotas = Math.floor(userData.charges.max);
         const intervalo = maxGotas - gotas;
         const jaNotificado = notificacoes.includes(cookie);
-
-        const quaseCheio = gotas >= maxGotas - 1 && gotas < maxGotas;
         const cheio = gotas >= maxGotas;
-
-        if (quaseCheio && !jaNotificado) {
-            notificacoes.push(cookie);
-            notify(`⚠️ Conta ${userData.name} #${userData.id} está quase cheia! (${gotas}/${maxGotas})`);
-        }
 
         if (cheio) {
             await page.evaluate(async (cookieHeader) => {
@@ -87,6 +80,9 @@ async function verificarCookies(browser, cookies) {
             }, `s=${cookie}`);
 
             notify(`💥 Conta ${userData.name} #${userData.id} pintou 1 pixel para evitar desperdício!`);
+
+            let pixelsPintados = fs.readFileSync('pixels.txt', 'utf8').split('\n').filter(line => line.trim() !== '');
+            fs.writeFileSync('pixels.txt', `${parseInt(pixelsPintados) + 1}\n`, 'utf8');
         }
 
         totalGotas += gotas;
@@ -155,6 +151,12 @@ async function verificarCookies(browser, cookies) {
             : ''
         )
     );
+
+    let pixelsPintados = fs.readFileSync('pixels.txt', 'utf8').split('\n').filter(line => line.trim() !== '');
+    console.log(
+        chalk.white("  Pixels pintados: ") +
+        chalk.cyan(parseInt(pixelsPintados))
+    )
 
     lastUpdate = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     process.title = `Gotas Bot - ${cookies.length} contas | Gotas: ${totalGotas}/${totalMaxGotas} | Última atualização: ${lastUpdate} | by zpaulin`;
