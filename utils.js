@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 export function title() {
     console.clear();
     console.log(chalk.green(figlet.textSync('Gotas Bot', {
-        font: 'Small',
+        font: 'Standard',
         horizontalLayout: 'default',
         verticalLayout: 'default',
         width: 80,
