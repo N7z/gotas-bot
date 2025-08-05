@@ -160,8 +160,19 @@ async function verificarCookies(browser, cookies) {
     let pixelsPintados = fs.readFileSync('pixels.txt', 'utf8').split('\n').filter(line => line.trim() !== '');
     console.log(
         chalk.white("  Pixels pintados: ") +
-        chalk.cyan(parseInt(pixelsPintados))
+        chalk.cyan(parseInt(pixelsPintados)) + '\n'
     )
+
+    process.stdout.write(chalk.white(`  Verificando novamente em `) + chalk.yellow(`30 segundos`) + chalk.white(`...   `));
+    for (let i = 29; i > 0; i--) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        process.stdout.write(
+            `\r` + chalk.white(`  Verificando novamente em `) +
+            chalk.yellow(`${i} segundos`) +
+            chalk.white(`...   `)
+        );
+    }
+    process.stdout.write('\r' + ' '.repeat(50) + '\r');
 
     lastUpdate = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     process.title = `Gotas Bot - ${cookies.length} contas | Gotas: ${totalGotas}/${totalMaxGotas} | Última atualização: ${lastUpdate} | by zpaulin`;
