@@ -12,6 +12,8 @@ let timeUntilFull = null;
 let totalGotas = null;
 let totalMaxGotas = null;
 
+const autoBuyMoreCharges = true;
+
 dotenv.config();
 
 title();
@@ -84,10 +86,38 @@ async function verificarCookies(browser, cookies) {
             notificacoes = notificacoes.filter(c => c !== cookie);
         }
 
+        if (userData.droplets >= 500 && autoBuyMoreCharges) {
+            const amount = Math.floor(userData.droplets / 500);
+            const cookieHeader = `s=${cookie}`;
+            
+            await page.evaluate(async (amount, cookieHeader) => {
+                await fetch("https://backend.wplace.live/purchase", {
+                    method: "POST",
+                    headers: {
+                        "accept": "*/*",
+                        "content-type": "text/plain;charset=UTF-8",
+                        "cookie": cookieHeader,
+                        "Referer": "https://wplace.live/"
+                    },
+                    body: JSON.stringify({
+                        product: {
+                            id: 70,
+                            amount: amount
+                        }
+                    })
+                });
+            }, amount, cookieHeader);
+
+            console.log(chalk.green(`  Comprou automático na conta ${userData.name} x${amount}`));
+        }
+
         console.log(
             chalk.white.bold(`  ${userData.name} #${userData.id}`) + 
             chalk.blue(` (${gotas}/${maxGotas})`) +
-            chalk.green(` ${cheio ? '[CHEIO]' : ''}`)
+            chalk.cyan(` - ${userData.droplets} Droplets`) +
+            chalk.yellow(` - ${Math.floor(userData.level)} Nível`) +
+            chalk.green(` ${cheio ? '[CHEIO]' : ''}`) +
+            chalk.red(` ${userData.droplets >= 500 ? '[DROPLETS]' : ''}`)
         );
 
         await page.close();
@@ -103,7 +133,7 @@ async function verificarCookies(browser, cookies) {
         chalk.white("  Tempo estimado: ") +
         chalk.yellow(timeUntilFull
             ? `${Math.floor(timeUntilFull / 3600)}h e ${Math.floor((timeUntilFull % 3600) / 60)} minutos`
-            : 'Indisponível'
+            : ''
         )
     );
 
