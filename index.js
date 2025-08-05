@@ -1,9 +1,8 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import figlet from 'figlet';
 import dotenv from 'dotenv';
-import fetch from 'node-fetch';
 import puppeteer from 'puppeteer-extra';
+import { title, notify } from './utils.js';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 let contas = [];
@@ -15,7 +14,6 @@ let totalMaxGotas = null;
 
 dotenv.config();
 
-// Show title
 title();
 
 puppeteer.use(StealthPlugin());
@@ -113,28 +111,4 @@ async function verificarCookies(browser, cookies) {
     process.title = `Gotas Bot - ${cookies.length} contas | Gotas: ${totalGotas}/${totalMaxGotas} | Última atualização: ${lastUpdate} | by zpaulin`;
 
     setTimeout(() => verificarCookies(browser, cookies), 30000);
-}
-
-// Mostrar título
-function title() {
-    console.clear();
-    console.log(chalk.green(figlet.textSync('Gotas Bot', {
-        font: 'Small',
-        horizontalLayout: 'default',
-        verticalLayout: 'default',
-        width: 80,
-        whitespaceBreak: true
-    })));
-}
-
-// Discord webhook
-function notify(message) {
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    const payload = JSON.stringify({ content: message });
-
-    fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
-    });
 }
