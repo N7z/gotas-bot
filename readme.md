@@ -1,5 +1,5 @@
 # 💧 GotasBot
-> Um bot talvez contra os TOS do Wplace, mas é indetectável e nem dá tanta vantagem assim.
+> Um bot talvez contra os TOS do Wplace, mas é indetectável.
 
 # Funções
 - Agrupa todas as contas numa só interface pra ver quando estão carregadas
