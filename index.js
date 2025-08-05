@@ -12,11 +12,16 @@ let timeUntilFull = null;
 let totalGotas = null;
 let totalMaxGotas = null;
 
+const autoBuyType = 'charges'; // TODO: implementar outros tipos
 const autoBuyMoreCharges = true;
 
 dotenv.config();
 
 title();
+
+if (!fs.existsSync('pixels.txt')) {
+    fs.writeFileSync('pixels.txt', '0', 'utf8');
+}
 
 puppeteer.use(StealthPlugin());
 puppeteer.launch({ headless: 'new' }).then(async browser => {
@@ -132,7 +137,7 @@ async function verificarCookies(browser, cookies) {
             chalk.yellow(` - ${Math.floor(userData.level)} Nível`) +
             chalk.magenta(` - ${userData.pixelsPainted} Pixels`) +
             chalk.green(` ${cheio ? '[CHEIO]' : ''}`) +
-            chalk.red(` ${userData.droplets >= 500 ? '[DROPLETS]' : ''}`)
+            chalk.red(` ${userData.droplets >= 500 && autoBuyMoreCharges ? '[AUTOBUY]' : ''}`)
         );
 
         await page.close();
