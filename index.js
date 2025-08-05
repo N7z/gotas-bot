@@ -2,7 +2,7 @@ import fs from 'fs';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
 import puppeteer from 'puppeteer-extra';
-import { title, notify } from './utils.js';
+import { title, notify, CORES } from './utils.js';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 let contas = [];
@@ -80,7 +80,7 @@ async function verificarCookies(browser, cookies) {
                     "cookie": cookieHeader,
                     "Referer": "https://wplace.live/"
                 },
-                body: JSON.stringify({ colors: [Math.floor(Math.random() * 10)], coords: [460, 706] })
+                body: JSON.stringify({ colors: [ CORES['Light Teal'] ], coords: [460, 706] })
                 });
             }, `s=${cookie}`);
 
@@ -161,8 +161,9 @@ async function verificarCookies(browser, cookies) {
     console.log(
         chalk.white("  Pixels pintados: ") +
         chalk.cyan(parseInt(pixelsPintados)) + '\n'
-    )
+    );
 
+    setTimeout(() => verificarCookies(browser, cookies), 30000);
     process.stdout.write(chalk.white(`  Verificando novamente em `) + chalk.yellow(`30 segundos`) + chalk.white(`...   `));
     for (let i = 29; i > 0; i--) {
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -176,6 +177,4 @@ async function verificarCookies(browser, cookies) {
 
     lastUpdate = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     process.title = `Gotas Bot - ${cookies.length} contas | Gotas: ${totalGotas}/${totalMaxGotas} | Última atualização: ${lastUpdate} | by zpaulin`;
-
-    setTimeout(() => verificarCookies(browser, cookies), 30000);
 }
