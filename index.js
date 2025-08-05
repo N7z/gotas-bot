@@ -10,6 +10,8 @@ let contas = [];
 let notificacoes = [];
 let lastUpdate = null;
 let timeUntilFull = null;
+let totalGotas = null;
+let totalMaxGotas = null;
 
 dotenv.config();
 
@@ -37,6 +39,9 @@ async function verificarCookies(browser, cookies) {
     title();
     console.log(chalk.blue(`  Iniciando verificação de ${cookies.length} contas...\n`));
 
+    totalGotas = 0;
+    totalMaxGotas = 0;
+
     let largestTimeToComplete = 0;
     for(const cookie of cookies) {
         // Login
@@ -63,9 +68,13 @@ async function verificarCookies(browser, cookies) {
         const maxGotas = Math.floor(userData.charges.max);
         const cheio = gotas >= maxGotas;
         const intervalo = maxGotas - gotas;
+
+        totalGotas += gotas;
+        totalMaxGotas += maxGotas;
+
         if (intervalo >= largestTimeToComplete) {
             largestTimeToComplete = intervalo;
-            timeUntilFull = intervalo * 30; // 30 segundos por gota
+            timeUntilFull = intervalo * 30;
         }
 
         if (cheio && !jaNotificado) {
@@ -87,7 +96,13 @@ async function verificarCookies(browser, cookies) {
     }
 
     console.log(
-        chalk.white("\n  Tempo estimado pra carregar todas as contas: ") +
+        chalk.white(`\n  Total de Gotas: `) +
+        chalk.blue(`${totalGotas}/${totalMaxGotas}`) +
+        chalk.green(` (${Math.floor((totalGotas / totalMaxGotas) * 100)}%)`)
+    );
+
+    console.log(
+        chalk.white("  Tempo estimado: ") +
         chalk.yellow(timeUntilFull
             ? `${Math.floor(timeUntilFull / 3600)}h e ${Math.floor((timeUntilFull % 3600) / 60)} minutos`
             : 'Indisponível'
@@ -95,7 +110,7 @@ async function verificarCookies(browser, cookies) {
     );
 
     lastUpdate = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    process.title = `Gotas Bot - ${cookies.length} contas | Última atualização: ${lastUpdate}`;
+    process.title = `Gotas Bot - ${cookies.length} contas | Gotas: ${totalGotas}/${totalMaxGotas} | Última atualização: ${lastUpdate} | by zpaulin`;
 
     setTimeout(() => verificarCookies(browser, cookies), 30000);
 }
