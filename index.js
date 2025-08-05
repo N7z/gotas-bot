@@ -34,7 +34,6 @@ puppeteer.launch({ headless: 'new' }).then(async browser => {
     await verificarCookies(browser, cookies);
 });
 
-// Verificar contas
 async function verificarCookies(browser, cookies) {
     title();
     console.log(chalk.blue(`  Iniciando verificação de ${cookies.length} contas...\n`));
@@ -43,31 +42,52 @@ async function verificarCookies(browser, cookies) {
     totalMaxGotas = 0;
 
     let largestTimeToComplete = 0;
-    for(const cookie of cookies) {
-        // Login
-        await browser.setCookie({ name: 's', value: cookie, domain: 'backend.wplace.live' });
 
+    for (const cookie of cookies) {
+        await browser.setCookie({ name: 's', value: cookie, domain: 'backend.wplace.live' });
         const page = await browser.newPage();
-        
-        // Fetch user data
+
         await page.goto('https://backend.wplace.live/me');
         await page.waitForSelector('body');
+
         if (await page.evaluate(() => document.querySelector('body').innerText.includes('{"error":"Unauthorized","status":401}'))) {
             console.log(chalk.red('  Erro: Unauthorized (401)'));
             await browser.close();
             return;
         }
 
-        const userData = JSON.parse(
-            await page.evaluate(() => document.querySelector('body').innerText)
-        );
+        const userData = JSON.parse(await page.evaluate(() => document.querySelector('body').innerText));
         contas[cookie] = userData;
 
-        const jaNotificado = notificacoes.includes(cookie);
         const gotas = Math.floor(userData.charges.count);
         const maxGotas = Math.floor(userData.charges.max);
-        const cheio = gotas >= maxGotas;
         const intervalo = maxGotas - gotas;
+        const jaNotificado = notificacoes.includes(cookie);
+
+        const quaseCheio = gotas >= maxGotas - 1 && gotas < maxGotas;
+        const cheio = gotas >= maxGotas;
+
+        if (quaseCheio && !jaNotificado) {
+            notificacoes.push(cookie);
+            notify(`⚠️ Conta ${userData.name} #${userData.id} está quase cheia! (${gotas}/${maxGotas})`);
+        }
+
+        if (cheio) {
+            await page.evaluate(async (cookieHeader) => {
+                await fetch("https://backend.wplace.live/s0/pixel/730/1194", {
+                method: "POST",
+                headers: {
+                    "accept": "*/*",
+                    "content-type": "text/plain;charset=UTF-8",
+                    "cookie": cookieHeader,
+                    "Referer": "https://wplace.live/"
+                },
+                body: JSON.stringify({ colors: [Math.floor(Math.random() * 10)], coords: [460, 706] })
+                });
+            }, `s=${cookie}`);
+
+            notify(`💥 Conta ${userData.name} #${userData.id} pintou 1 pixel para evitar desperdício!`);
+        }
 
         totalGotas += gotas;
         totalMaxGotas += maxGotas;
@@ -116,6 +136,7 @@ async function verificarCookies(browser, cookies) {
             chalk.blue(` (${gotas}/${maxGotas})`) +
             chalk.cyan(` - ${userData.droplets} Droplets`) +
             chalk.yellow(` - ${Math.floor(userData.level)} Nível`) +
+            chalk.magenta(` - ${userData.pixelsPainted} Pixels`) +
             chalk.green(` ${cheio ? '[CHEIO]' : ''}`) +
             chalk.red(` ${userData.droplets >= 500 ? '[DROPLETS]' : ''}`)
         );
