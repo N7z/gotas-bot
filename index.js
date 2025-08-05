@@ -127,8 +127,6 @@ async function verificarCookies(browser, cookies) {
                     })
                 });
             }, amount, cookieHeader);
-
-            console.log(chalk.green(`  Comprou automático na conta ${userData.name} x${amount}`));
         }
 
         console.log(
