@@ -1,6 +1,6 @@
 {
   "name": "gotas-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bot pra saber quando carregou as gotas no WPlace.",
   "main": "index.js",
   "scripts": {
