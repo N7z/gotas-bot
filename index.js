@@ -100,7 +100,7 @@ async function verificarCookies(browser, cookies) {
 
         if (cheio && !jaNotificado) {
             notificacoes.push(cookie);
-            notify(`💥 Conta ${userData.name} #${userData.id} está cheia! **Gotas:** *${gotas}/${maxGotas}*. ||<@${process.env.OWNER_ID}>||`);
+            notify(`💥 Conta ${userData.name} #${userData.id} está cheia! *Gotas:* *${gotas}/${maxGotas}*`);
         }
 
         if (!cheio && jaNotificado) {
