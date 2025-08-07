@@ -24,7 +24,7 @@ if (!fs.existsSync('pixels.txt')) {
 }
 
 puppeteer.use(StealthPlugin());
-puppeteer.launch({ headless: 'new' }).then(async browser => {
+puppeteer.launch({ headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
     if (!fs.existsSync('cookies.json')) {
         return console.log(chalk.red('  Erro: Cookies não encontrados'));
     }
